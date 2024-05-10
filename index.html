@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>Les Bonnes Pièces</title>
     <link rel="stylesheet" href="styles.css" />
-    <script type="module" src="pieces.js"></script>
+    <script type="module" src="./pieces.js"></script>
   </head>
   <body>
     <header>
@@ -15,10 +15,30 @@
       <!-- Menu de recherche -->
       <section class="filtres">
         <h3>Filtres</h3>
+        <button class="btn-trier">Trier par prix croissant</button>
+        <button class="btn-filtrer">Filtrer les pieces non abordables</button>
+        <button class="btn-decroissant">Trier par prix decroissant</button>
+        <button class="btn-nodesc">Filtrer les pieces sans description</button>
+        <div>
+          <h4>Rangée de prix:</h4>
+          <input
+            id="inputRange"
+            type="range"
+            min="0"
+            max="60"
+            value="60"
+            step="5"
+          />
+          <p class="priceRange"></p>
+          <button class="btn-trier-prix">Trier par tranche de prix</button>
+        </div>
       </section>
 
       <!-- Fiches produits -->
-      <section class="fiches"></section>
+      <section class="fiches">
+        <div class="abordables"></div>
+        <div class="disponibles"></div>
+      </section>
     </main>
   </body>
 </html>
