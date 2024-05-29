@@ -1,10 +1,33 @@
-// pour importer les données du .json:
-const response = await fetch("./pieces-autos.json");
-const pieces = await response.json();
+//*! ajouter la propriété "type=module" dans l'élément script du HTML pour que l'import fonctionne
+//import des variables ou des fonctiion d'un autre fichier .js
+import {
+  ajoutListenersAvis,
+  ajoutListenersEnvoyerAvis,
+  afficherAvis,
+  afficherGraphiqueAvis,
+} from "./avis.js";
 
-// test pour voir si on a bien récupéré les données du .json:
-// console.log(pieces[0]);
-//**renvoi au 1er objet (index[0]) du fichier .json
+//Récupération des pièces eventuellement stockées dans le localStorage
+let pieces = window.localStorage.getItem("pieces");
+
+if (pieces === null) {
+  // pour importer les données du .json:
+  //* with promise:
+  //? const pieces = await fetch("http://localhost:8081/pieces").then(pieces => pieces.json());
+  //* with await
+  const response = await fetch("http://localhost:8081/pieces/");
+  pieces = await response.json();
+
+  // Transformation des pièces en STRING JSON
+  const valeurPieces = JSON.stringify(pieces);
+  // Stockage des informations dans le localStorage
+  window.localStorage.setItem("pieces", valeurPieces);
+} else {
+  // Transformation du STRING 'pieces' en JAVASCRIPT OBJECT
+  pieces = JSON.parse(pieces);
+}
+
+ajoutListenersEnvoyerAvis();
 
 function genererPieces(pieces) {
   //for loop: pour lister tous les artciles
@@ -20,6 +43,9 @@ function genererPieces(pieces) {
     const categorieElement = document.createElement("p");
     const descriptionElement = document.createElement("p");
     const stockAvailable = document.createElement("p");
+    const avisBouton = document.createElement("button");
+    avisBouton.dataset.id = article.id;
+    avisBouton.textContent = "Afficher les avis";
 
     imageElement.src = article.image;
     nomElement.innerText = article.nom;
@@ -40,10 +66,24 @@ function genererPieces(pieces) {
     pieceElement.appendChild(categorieElement);
     pieceElement.appendChild(descriptionElement);
     pieceElement.appendChild(stockAvailable);
+    pieceElement.appendChild(avisBouton);
   }
+
+  ajoutListenersAvis();
 }
 
 genererPieces(pieces);
+
+for (let i = 0; i < pieces.length; i++) {
+  const id = pieces[i].id;
+  const avisJSON = window.localStorage.getItem(`avis-pieces-${id}`);
+  const avis = JSON.parse(avisJSON);
+
+  if (avis !== null) {
+    const pieceElement = document.querySelector(`article[data-id="${id}"]`);
+    afficherAvis(pieceElement, avis);
+  }
+}
 
 // ! Gestion boutons
 const boutonTrier = document.querySelector(".btn-trier");
@@ -101,7 +141,6 @@ for (let i = pieces.length - 1; i >= 0; i--) {
     // at position [i], remove 1 item
   }
 }
-console.log(noms);
 
 // !Pieces abordables (texte)
 const pElement = document.createElement("p");
@@ -160,3 +199,12 @@ btnSortPrice.addEventListener("click", () => {
   document.querySelector(".fiches").innerHTML = "";
   genererPieces(prixFiltre);
 });
+
+// Ajout du listener pour mettre à jour des données du localStorage
+const btnMettreAJour = document.querySelector(".btn-maj");
+btnMettreAJour.addEventListener("click", () => {
+  window.localStorage.removeItem("pieces");
+});
+
+//affichage graphique des Avis
+await afficherGraphiqueAvis();

@@ -5,6 +5,7 @@
     <title>Les Bonnes Pièces</title>
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="./pieces.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <header>
@@ -32,6 +33,32 @@
           <p class="priceRange"></p>
           <button class="btn-trier-prix">Trier par tranche de prix</button>
         </div>
+        <!-- code a ajouter -->
+        <h3>Ajouter un avis</h3>
+        <form class="formulaire-avis">
+          Identifiant de la pièce :<br />
+          <input type="number" name="piece-id" /><br />
+          Nom d'utilisateur :<br />
+          <input type="text" name="utilisateur" /><br />
+          Avis :<br />
+          <input type="text" name="commentaire" /><br />
+          Notes : <br />
+          <input
+            type="number"
+            name="notes"
+            min="1"
+            max="5"
+            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+          />
+          <br />
+          <button>Envoyer</button>
+        </form>
+        <h3>Données</h3>
+        <button class="btn-maj">Mettre à jour les pièces</button>
+        <h3>Aperçu des avis</h3>
+        <canvas id="graphique-avis" width="300" height="300"></canvas>
+        <h3>Statistiques commentaires</h3>
+        <canvas id="graphique-dispo" width="300" height="300"></canvas>
       </section>
 
       <!-- Fiches produits -->
